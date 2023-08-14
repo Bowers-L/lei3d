@@ -99,6 +99,28 @@ endif()
 #-------------------------------------------------------------------------------------
 
 FetchContent_Declare(
+    cereal
+    GIT_REPOSITORY  https://github.com/USCiLab/cereal.git
+    GIT_TAG         master
+    GIT_SHALLOW     TRUE
+    GIT_PROGRESS    TRUE
+)
+FetchContent_GetProperties(cereal)
+# if(NOT cereal_POPULATED)
+    FetchContent_Populate(cereal)
+    message("Fetching cereal")
+
+    file(GLOB_RECURSE cerealHeaderFiles #Header only so we just need this.
+        "*.hpp"
+    )
+
+    add_library(cereal INTERFACE ${cerealHeaderFiles}) #I think this is just so it gets added as a project. The build itself doesn't matter??
+    target_include_directories(cereal INTERFACE ${cereal_SOURCE_DIR}/include)
+# endif()
+
+#-------------------------------------------------------------------------------------
+
+FetchContent_Declare(
     assimp
     GIT_REPOSITORY https://github.com/assimp/assimp.git
     GIT_TAG        v5.2.5
