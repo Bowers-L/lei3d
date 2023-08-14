@@ -29,5 +29,7 @@ namespace lei3d
         virtual void PhysicsUpdate() {}
         virtual void Render() {}
         virtual void OnDestroy() {}
+
+        virtual void OnEditorUpdate() {}
     };
 }

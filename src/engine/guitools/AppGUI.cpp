@@ -1,7 +1,7 @@
 #include "AppGUI.hpp"
 
 namespace lei3d {
-	void AppGUI::RenderUI() const {
+	void AppGUI::RenderUI() {
 
         if (m_ShowDemoWindow) 
         {
@@ -44,9 +44,9 @@ namespace lei3d {
             ImGui::EndMenuBar();
         }
 
-        ImGui::Text("PRESS TAB TO UNLOCK THE MOUSE");
+        ImGui::Text("PRESS TAB TO TOGGLE");
 
-        if (ImGui::CollapsingHeader("Scenes")) 
+        if (ImGui::CollapsingHeader("Scene List")) 
         {
             static int selectedScene = 0;
             int sceneI = 0;
@@ -65,7 +65,7 @@ namespace lei3d {
         }
 
         Scene& scene = SceneManager::ActiveScene();
-        if (ImGui::CollapsingHeader("Scene Data"));
+        if (ImGui::CollapsingHeader("Scene"))
         {
             scene.ImGUIRender();
         }

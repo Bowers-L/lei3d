@@ -22,8 +22,13 @@ namespace lei3d
         std::vector<btTriangleMesh*> modelMeshes = model.GetCollisionMeshes();
         for (auto triMesh: modelMeshes)
         {
-            AddCollisionsFromTriangleMesh(triMesh, m_Entity.m_Transform);
+            AddCollisionsFromTriangleMesh(triMesh, m_Entity.transform());
         }
+    }
+
+    void StaticCollider::OnEditorUpdate()
+    {
+        
     }
 
     /**

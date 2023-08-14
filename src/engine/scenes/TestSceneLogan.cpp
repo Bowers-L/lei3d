@@ -7,8 +7,6 @@
 #include <glm/glm.hpp>
 #include "physics/PhysicsWorld.hpp"
 
-
-
 namespace lei3d {
     TestSceneLogan::TestSceneLogan() {
     }

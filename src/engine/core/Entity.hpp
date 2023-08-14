@@ -32,8 +32,8 @@ namespace lei3d
     private:
         std::vector<std::unique_ptr<Component>> m_Components;
         std::string m_Name;
-    public:
         Transform m_Transform;
+    public:
 
         Entity();
         Entity(const std::string& name);
@@ -46,16 +46,24 @@ namespace lei3d
         void Render();
         void OnDestroy();
 
+        void OnEditorUpdate();
+
+        const std::string& name() const;
+        const Transform& transform() const;
+
+        glm::mat4 GetTranslationMat() const;
+        glm::mat4 GetRotationMat() const;
+        glm::mat4 GetScaleMat() const;
+        glm::mat4 GetModelMat() const;
+
+        void SetName(const std::string& name);
         void SetPosition(const glm::vec3& position);
         void SetScale(const glm::vec3& scale);
 
-        glm::mat4 GetTranslationMat();
-        glm::mat4 GetRotationMat();
-        glm::mat4 GetScaleMat();
-        glm::mat4 GetModelMat();
-
-        const std::string& GetName();
-        void SetName(const std::string& name);
+        //TODO: Consider refactoring Editor GUIs to separate class
+        void NameGUI();
+        void TransformGUI();
+        void ShowInspectorGUI();
 
         /*
         * Component System:
@@ -102,7 +110,5 @@ namespace lei3d
             //Note: We cannot use c since it got moved into the list.
             return static_cast<C*>(m_Components.back().get());
         }
-
-        void ShowInspectorGUI();
     };
 }

@@ -24,6 +24,13 @@ namespace lei3d
 
     class Scene
     {
+        enum SceneState
+        {
+            SCENE_PLAYING,
+            SCENE_PAUSED,
+            SCENE_START,
+        };
+
     private:
         std::vector<std::unique_ptr<Entity>> m_Entities;
         std::unordered_map<std::string, int> m_EntityNameCounts;
@@ -33,6 +40,8 @@ namespace lei3d
         std::unique_ptr<FlyCamera> m_Camera = nullptr;  // every scene needs a camera
         std::unique_ptr<Shader> m_MainShader = nullptr; // THIS IS TEMPORARY
         std::unique_ptr<PhysicsWorld> m_PhysicsWorld = nullptr; // Each scene has a physics world
+
+        SceneState m_State;
     public:
         Scene();
         ~Scene();
@@ -52,6 +61,11 @@ namespace lei3d
         void Load();
         void Unload();
 
+        //Scene State Changers
+        void Play();
+        void Pause();
+        void Reset();
+
         //TODO: Abstract scene creation/loading into files: https://trello.com/c/eC66QGuD/25-define-scene-file-format
         //Right now we use this virtual Load function to load all the objs in code. 
         virtual void OnLoad() {}
@@ -70,5 +84,8 @@ namespace lei3d
         PhysicsWorld& GetPhysicsWorld() const;
 
         void PrintEntityList() const;   //For Debugging
+
+    private:
+        std::string StateToString() const;
     };
 }

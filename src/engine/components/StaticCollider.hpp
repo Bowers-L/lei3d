@@ -15,6 +15,8 @@ namespace lei3d
 
         void Init();
         void SetColliderToModel(const Model& model);
+
+        void OnEditorUpdate() override;
     private:
         void AddCollisionsFromTriangleMesh(btTriangleMesh* triMesh, const Transform& transform);
     };

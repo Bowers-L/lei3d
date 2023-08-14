@@ -26,7 +26,7 @@ namespace lei3d {
         btScalar mass{1.f};
         btVector3 localInertia{0.0f, 0.0f, 0.0f};
         character->calculateLocalInertia(mass, localInertia);
-        Transform transform = m_Entity.m_Transform;
+        Transform transform = m_Entity.transform();
         startTransform.setOrigin(btVector3{transform.position.x, transform.position.y, transform.position.z});
         
         //THIS IS A MEMORY LEAK, FIX!!
@@ -45,7 +45,7 @@ namespace lei3d {
 
     void CharacterController::PhysicsUpdate()
     {
-        m_Entity.m_Transform.position = SceneManager::ActiveScene().GetPhysicsWorld().GetFirstColliderPosition();
+        m_Entity.SetPosition(SceneManager::ActiveScene().GetPhysicsWorld().GetFirstColliderPosition());
     }
 
 }

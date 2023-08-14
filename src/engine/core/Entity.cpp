@@ -20,6 +20,73 @@ namespace lei3d
         OnDestroy();
     }
 
+    //This is a poor man's observer pattern.
+
+    void Entity::Start()
+    {
+        LEI_TRACE("Started Entity");
+
+        for (auto& component : m_Components)
+        {
+            component->Start();
+        }
+    }
+
+    void Entity::Update()
+    {
+        for (auto& component : m_Components)
+        {
+            component->Update();
+        }
+    }
+
+    void Entity::PhysicsUpdate()
+    {
+        for (auto& component : m_Components)
+        {
+            component->PhysicsUpdate();
+        }
+    }
+
+    void Entity::Render()
+    {
+        for (auto& component : m_Components)
+        {
+            component->Render();
+        }
+    }
+
+    void Entity::OnDestroy()
+    {
+        for (auto& component : m_Components)
+        {
+            component->OnDestroy();
+        }
+    }
+
+    void Entity::OnEditorUpdate()
+    {
+        for (auto& component : m_Components)
+        {
+            component->OnEditorUpdate();
+        }
+    }
+
+    const std::string& Entity::name() const
+    {
+        return m_Name;
+    }
+
+    void Entity::SetName(const std::string& name)
+    {
+        m_Name = name;
+    }
+
+    const Transform& Entity::transform() const
+    {
+        return m_Transform;
+    }
+
     void Entity::SetPosition(const glm::vec3& position)
     {
         m_Transform.position = position; 
@@ -30,30 +97,21 @@ namespace lei3d
         m_Transform.scale = scale;
     }
 
-    glm::mat4 Entity::GetTranslationMat() {
+    glm::mat4 Entity::GetTranslationMat() const {
         return glm::translate(glm::identity<glm::mat4>(), m_Transform.position);
     }
 
-    glm::mat4 Entity::GetRotationMat() {
+    glm::mat4 Entity::GetRotationMat() const {
         //TODO: Implement quaternion.
         return glm::identity<glm::mat4>();
     }
     
-    glm::mat4 Entity::GetScaleMat() {
+    glm::mat4 Entity::GetScaleMat() const {
         return glm::scale(glm::identity<glm::mat4>(), m_Transform.scale);
     }
 
-    const std::string& Entity::GetName()
+    glm::mat4 Entity::GetModelMat() const
     {
-        return m_Name;
-    }
-
-    void Entity::SetName(const std::string& name)
-    {
-        m_Name = name;
-    }
-
-    glm::mat4 Entity::GetModelMat() {
         glm::mat4 translate = GetTranslationMat();
         glm::mat4 rotate = GetRotationMat();
         glm::mat4 scale = GetScaleMat();
@@ -69,63 +127,31 @@ namespace lei3d
         return model;
     }
 
-    void Entity::Start() {
-        LEI_TRACE("Started Entity");
-
-        for (auto& component : m_Components) {
-            component->Start();
-        }
-    }
-
-    void Entity::Update() {
-        for (auto& component : m_Components) {
-            component->Update();
-        }
-    }
-
-    void Entity::PhysicsUpdate() {
-        for (auto& component : m_Components) {
-            component->PhysicsUpdate();
-        }
-    }
-
-    void Entity::Render() {
-        for (auto& component : m_Components) {
-            component->Render();
-        }
-    }
-
-    void Entity::OnDestroy() {
-        for (auto& component : m_Components) {
-            component->OnDestroy();
-        }
-    }
-
-    void Entity::ShowInspectorGUI()
+    void Entity::NameGUI()
     {
-        ImGui::Begin("Inspector");
-
-        //NAME
-        const int maxNameSize = 100;
+        constexpr int MAX_NAME_SIZE = 100;
         const int currLength = m_Name.length();
-        char buffer[maxNameSize+1] = {};
+        char buffer[MAX_NAME_SIZE + 1] = {};
 
-        m_Name.copy(buffer, currLength); 
-        m_Name[currLength] = '\0';
-        if (ImGui::InputText("Name", &buffer[0], maxNameSize))
-        {
-            std::string newName = std::string(buffer);
-            if (newName.length() > maxNameSize)
-            {
-                newName = newName.substr(0, maxNameSize);
-            }
-            if (newName.length() == 0)
-            {
-                newName = "";
-            }
-            SetName(newName);
-        }
+	    m_Name.copy(buffer, currLength); 
+	    m_Name[currLength] = '\0';
+	    if (ImGui::InputText("Name", &buffer[0], MAX_NAME_SIZE))
+	    {
+		    std::string newName = std::string(buffer);
+		    if (newName.length() > MAX_NAME_SIZE)
+		    {
+			    newName = newName.substr(0, MAX_NAME_SIZE);
+		    }
+		    if (newName.length() == 0)
+		    {
+			    newName = "";
+		    }
+		    SetName(newName);
+	    }
+    }
 
+    void Entity::TransformGUI()
+    {
         //TRANSFORM
         if (ImGui::CollapsingHeader("Transform"))
         {
@@ -134,18 +160,26 @@ namespace lei3d
             float y = m_Transform.position.y;
             float z = m_Transform.position.z;
 
-            const float stepFine = 0.5f;
-            const float stepFast = 10.0f;   //Hold down Ctrl to scroll faster.
+            constexpr float STEP_FINE = 0.5f;
+            constexpr float STEP_FAST = 10.0f;   //Hold down Ctrl to scroll faster.
 
-            ImGui::InputFloat("x", &x, stepFine, stepFast);
+            ImGui::InputFloat("x", &x, STEP_FINE, STEP_FAST);
             //ImGui::SameLine();            
-            ImGui::InputFloat("y", &y, stepFine, stepFast);
+            ImGui::InputFloat("y", &y, STEP_FINE, STEP_FAST);
             //ImGui::SameLine();            
-            ImGui::InputFloat("z", &z, stepFine, stepFast);
+            ImGui::InputFloat("z", &z, STEP_FINE, STEP_FAST);
 
             //NOTE: If the position is not changing, it's probably because the physics engine (or something else) is overwriting it)
             SetPosition(glm::vec3(x, y, z));
         }
+    }
+
+    void Entity::ShowInspectorGUI()
+    {
+        ImGui::Begin("Inspector");
+
+        NameGUI();
+        TransformGUI();
 
         ImGui::SetWindowSize(ImVec2(300, 800), ImGuiCond_Once);
         ImGui::SetWindowPos(ImVec2(300, 0), ImGuiCond_Once);

@@ -24,6 +24,8 @@ namespace lei3d {
         m_PhysicsWorld->Create();    //TODO: Consider if there is some better way to do this
 
         OnLoad();
+
+        m_State = SCENE_START;
     }
 
     Entity& Scene::AddEntity(std::string name)
@@ -56,7 +58,7 @@ namespace lei3d {
     {
         for (auto& entity : m_Entities)
         {
-            if (entity->GetName().compare(name) == 0)
+            if (entity->name().compare(name) == 0)
             {
                 return entity.get();
             }
@@ -72,6 +74,23 @@ namespace lei3d {
         OnUnload();
     }
 
+    void Scene::Play()
+    {
+        m_State = SCENE_PLAYING;
+    }
+
+    void Scene::Pause()
+    {
+        m_State = SCENE_PAUSED;
+    }
+
+    void Scene::Reset()
+    {
+        //We have to do some tricky things to get the scene to reset all the objs and physics and stuff.
+        m_State = SCENE_START;
+		Load(); //This is inefficient
+    }
+
     void Scene::Start() {
         LEI_TRACE("Scene Start");
 
@@ -83,24 +102,31 @@ namespace lei3d {
     }
 
 	void Scene::Update() {
-        //m_VP = m_Camera->GetProj() * m_Camera->GetView();
+        if (m_State == SCENE_PLAYING)
+        {
+			//LEI_TRACE("Scene Update");
 
-        //LEI_TRACE("Scene Update");
-		for (auto& entity : m_Entities) {
-			entity->Update();
-		}
+            for (auto& entity : m_Entities)
+            {
+                entity->Update();
+            }
+
+            OnUpdate();
+        }
 
         m_Camera->PollCameraMovementInput();
-		OnUpdate();
 	}
 
     void Scene::PhysicsUpdate() {
-        //LEI_TRACE("Scene Physics Update");
-        for (auto& entity : m_Entities) {
-            entity->PhysicsUpdate();
-        }
+        if (m_State == SCENE_PLAYING) {
+            //LEI_TRACE("Scene Physics Update");
+            for (auto& entity : m_Entities)
+            {
+                entity->PhysicsUpdate();
+            }
 
-        OnPhysicsUpdate();
+            OnPhysicsUpdate();
+        }
     }
 
 	void Scene::Render() {
@@ -115,8 +141,46 @@ namespace lei3d {
         OnRender();
 	}
 
+    //yucky
+    std::string Scene::StateToString() const
+	{
+		switch (m_State)
+		{
+		case SCENE_PLAYING:
+            return "Playing";
+        case SCENE_PAUSED:
+            return "Paused";
+		case SCENE_START:
+        default:
+            return "Ready To Start";
+
+		}
+	}
+
     void Scene::ImGUIRender()
     {
+        //Scene Control Widgets
+        std::stringstream ss;
+        ss << "State: ";
+        ss << StateToString();
+        ImGui::Text(ss.str().c_str());
+        if (ImGui::Button("Play"))
+        {
+            Play();
+        }
+
+        ImGui::SameLine();
+        if (ImGui::Button("Pause"))
+        {
+            Pause();
+        }
+
+        ImGui::SameLine();
+        if (ImGui::Button("Reset"))
+        {
+            Reset();
+        }
+
         ImGui::Text("Camera: ");
         m_Camera->OnImGuiRender();
 
@@ -129,7 +193,7 @@ namespace lei3d {
             std::vector<std::string> entityNames;
             for (auto& entity : m_Entities)
             {
-                entityNames.push_back(entity->GetName());
+                entityNames.push_back(entity->name());
             }
 
             //LEI_INFO("Number of Entities: {0}", entityNames.size());
@@ -202,7 +266,7 @@ namespace lei3d {
     {
         for (auto& entity : m_Entities)
         {
-            LEI_INFO("Entity: {0}", entity->GetName());
+            LEI_INFO("Entity: {0}", entity->name());
         }
     }
 }
