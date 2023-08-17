@@ -1,6 +1,7 @@
 #include "core/Scene.hpp"
 
 #include "logging/GLDebug.hpp"
+#include "core/Application.hpp"
 
 namespace lei3d {
 	Scene::Scene() {
@@ -217,23 +218,6 @@ namespace lei3d {
                 }
                 ImGui::EndListBox();
             }
-
-            // Custom size: use all width, 5 items tall
-            //ImGui::Text("Full-width:");
-            //if (ImGui::BeginListBox("##listbox 2", ImVec2(-FLT_MIN, 5 * ImGui::GetTextLineHeightWithSpacing())))
-            //{
-            //    for (int n = 0; n < IM_ARRAYSIZE(items); n++)
-            //    {
-            //        const bool is_selected = (item_current_idx == n);
-            //        if (ImGui::Selectable(items[n], is_selected))
-            //            item_current_idx = n;
-
-            //        // Set the initial focus when opening the combo (scrolling + keyboard navigation focus)
-            //        if (is_selected)
-            //            ImGui::SetItemDefaultFocus();
-            //    }
-            //    ImGui::EndListBox();
-            //}
 
             ImGui::TreePop();
         }
