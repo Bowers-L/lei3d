@@ -116,7 +116,7 @@ namespace lei3d
         m_SceneManager->Init();
 
         LEI_TRACE("Loading Default Scene");
-        m_SceneManager->SetScene("Test Kevin");
+        m_SceneManager->SetScene("Test File Loading");
         m_SceneManager->LoadNextScene();
 
         renderer.initialize(screenWidth, screenHeight);

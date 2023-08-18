@@ -1,0 +1,18 @@
+StartEntity {
+    name Skybox
+    position 0 0 0
+    scale 1 1 1
+}
+
+SkyBox {
+    faces  [
+                data/skybox/anime_etheria/right.jpg,
+                data/skybox/anime_etheria/left.jpg,
+                data/skybox/anime_etheria/up.jpg,
+                data/skybox/anime_etheria/down.jpg,
+                data/skybox/anime_etheria/front.jpg,
+                data/skybox/anime_etheria/back.jpg
+            ]
+}
+
+EndEntity

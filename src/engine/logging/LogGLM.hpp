@@ -12,6 +12,6 @@ inline void PrintMat4(const glm::mat4& mat) {
     // mat[3][0], mat[3][1], mat[3][2], mat[3][3],
 }
 
-inline void PrintVec3(std::string& name, const glm::vec3& vec) {
+inline void PrintVec3(std::string name, const glm::vec3& vec) {
     LEI_INFO("{0}: ({1}, {2}, {3})", name, vec[0], vec[1], vec[2]);
 }
