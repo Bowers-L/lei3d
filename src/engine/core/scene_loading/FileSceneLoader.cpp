@@ -46,19 +46,19 @@ namespace lei3d
                 ParseEntityComponents(fileStream, *entity);
             }
 
-            auto tokens = tokenize(line, ' ');
-            if (tokens.empty())
-            {
-                continue;
-            }
+            //auto tokens = tokenize(line, ' ');
+            //if (tokens.empty())
+            //{
+            //    continue;
+            //}
 
-            std::string commandName = strTrim(tokens[0]);
-            auto parserIt = commandParsers.find(commandName);
-            if (parserIt != commandParsers.end())
-            {
-                auto& commandParser = (*parserIt).second;
-                commandParser(fileStream);
-            }
+            //std::string commandName = strTrim(tokens[0]);
+            //auto parserIt = commandParsers.find(commandName);
+            //if (parserIt != commandParsers.end())
+            //{
+            //    auto& commandParser = (*parserIt).second;
+            //    commandParser(fileStream);
+            //}
         }
 
         scene.PrintEntityList();
@@ -167,6 +167,6 @@ namespace lei3d
             }
         }
 
-        LEI_ERROR("Entity ended prematurely while parsing components. (Did you forget to 'End Entity'?)");
+        LEI_ERROR("Entity ended prematurely while parsing components. (Did you forget to 'EndEntity'?)");
     }
 }

@@ -9,7 +9,10 @@
 
 
 namespace lei3d {
-    TestFileLoadingScene::TestFileLoadingScene() {
+    TestFileLoadingScene::TestFileLoadingScene(std::string filepath) :
+        m_SceneFilepath(filepath)
+	{
+
     }
 
     TestFileLoadingScene::~TestFileLoadingScene() {
@@ -18,7 +21,7 @@ namespace lei3d {
 
     void TestFileLoadingScene::OnLoad() {
         //Temporary instantiating this loader for testing
-        FileSceneLoader sceneLoader("data/scenes/TestSceneFile.lei");
+        FileSceneLoader sceneLoader(m_SceneFilepath);
         sceneLoader.Load(*this);
     }
 

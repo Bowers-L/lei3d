@@ -16,8 +16,9 @@ namespace lei3d {
 
     class TestFileLoadingScene : public Scene {
     private:
+        std::string m_SceneFilepath;
     public:
-        TestFileLoadingScene();
+        TestFileLoadingScene(std::string filepath);
         ~TestFileLoadingScene();
 
         void OnLoad() override;

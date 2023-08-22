@@ -20,7 +20,7 @@ namespace lei3d {
 
     void SceneManager::Init()
     {
-        m_AllScenes.push_back({ "Test File Loading", std::make_unique<TestFileLoadingScene>() });
+        m_AllScenes.push_back({ "Test File Loading", std::make_unique<TestFileLoadingScene>("data/scenes/TestSceneFile.lei") });
         m_AllScenes.push_back({ "Test Kevin", std::make_unique<TestSceneKevin>() });
         m_AllScenes.push_back({ "Test Logan", std::make_unique<TestSceneLogan>() });
         m_AllScenes.push_back({ "Empty", std::make_unique<EmptyScene>() });

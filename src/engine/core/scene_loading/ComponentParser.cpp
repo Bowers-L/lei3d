@@ -20,6 +20,7 @@ namespace lei3d
                 LEI_INFO("CREATING CHARACTER CONTROLLER");
                 auto cc = entity.AddComponent<CharacterController>();
                 cc->Init();
+                return;
             }
         }
     }
@@ -45,6 +46,7 @@ namespace lei3d
                 LEI_INFO("CREATING SKYBOX");
                 auto skybox = entity.AddComponent<SkyBox>();
                 skybox->Init(faces);
+                return;
             }
         }
     }
