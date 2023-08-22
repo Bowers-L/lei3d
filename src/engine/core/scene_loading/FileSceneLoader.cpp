@@ -1,13 +1,16 @@
 #include "FileSceneLoader.hpp"
 
+#include "CommandParser.hpp"
+#include "ComponentParser.hpp"
+
 #include "logging/Log.hpp"
 #include "logging/LogGLM.hpp"
 
-#include "components/SkyBox.hpp"
+#include "util/StringUtil.hpp"
 
 #include <fstream>
 
-#include "util/StringUtil.hpp"
+
 
 
 namespace lei3d
@@ -41,7 +44,20 @@ namespace lei3d
                 }
 
                 ParseEntityComponents(fileStream, *entity);
- 
+            }
+
+            auto tokens = tokenize(line, ' ');
+            if (tokens.empty())
+            {
+                continue;
+            }
+
+            std::string commandName = strTrim(tokens[0]);
+            auto parserIt = commandParsers.find(commandName);
+            if (parserIt != commandParsers.end())
+            {
+                auto& commandParser = (*parserIt).second;
+                commandParser(fileStream);
             }
         }
 
@@ -131,35 +147,26 @@ namespace lei3d
         std::string line;
         while (fileStream.good() && std::getline(fileStream, line))
         {
-            if (line.find("SkyBox") != std::string::npos)
-            {
-                ParseSkyBox(fileStream, entity);
-            }
-            if (line.find("EndEntity") != std::string::npos)
+            if (strContains(line, "EndEntity"))
             {
                 return; //We're done adding components and can return to the top level
             }
-        }
-    }
 
-    void FileSceneLoader::ParseSkyBox(std::ifstream& fileStream, Entity& entity) const
-    {
-        LEI_INFO("STARTING SKYBOX PARSE");
-        std::vector<std::string> faces;
-
-        std::string line;
-        while (fileStream.good() && std::getline(fileStream, line))
-        {
-            if (line.find("faces") != std::string::npos)
+            auto tokens = tokenize(line, '{');
+            if (tokens.empty())
             {
-                faces = streamArrayParse(fileStream, line);
+                continue;
             }
-            if (line.find('}') != std::string::npos)
+
+            std::string componentName = strTrim(tokens[0]);
+            auto parserIt = componentParsers.find(componentName);
+            if (parserIt != componentParsers.end())
             {
-                LEI_INFO("CREATING SKYBOX");
-                SkyBox* skybox = entity.AddComponent<SkyBox>();
-                skybox->Init(faces);
+                auto& componentParser = (* parserIt).second;
+                componentParser(fileStream, entity);
             }
         }
+
+        LEI_ERROR("Entity ended prematurely while parsing components. (Did you forget to 'End Entity'?)");
     }
 }

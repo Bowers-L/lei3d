@@ -1,3 +1,14 @@
+
+Model {
+    name model_backpack
+    path data/models/backpack/backpack.obj
+}
+
+Model {
+    name model_level
+    path data/models/leveldesign/KevWorldColorFive.obj
+}
+
 StartEntity {
     name Skybox
     position 0 0 0
@@ -5,14 +16,26 @@ StartEntity {
 }
 
 SkyBox {
-    faces  [
+    faces [
                 data/skybox/anime_etheria/right.jpg,
                 data/skybox/anime_etheria/left.jpg,
                 data/skybox/anime_etheria/up.jpg,
                 data/skybox/anime_etheria/down.jpg,
                 data/skybox/anime_etheria/front.jpg,
                 data/skybox/anime_etheria/back.jpg
-            ]
+        ]
+}
+
+EndEntity
+
+StartEntity {
+    name Backpack
+    position 0 200 0
+    scale 1 1 1 
+}
+
+ModelInstance {
+    model model_backpack
 }
 
 EndEntity
